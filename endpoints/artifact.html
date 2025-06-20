@@ -27,9 +27,17 @@
             width: 100%;
             background: #f6f7f9;
             gap: 24px;
-            padding: 32px 0;
+            padding: 32px 16px;
             box-sizing: border-box;
+            max-width: 100vw;
+            overflow-x: hidden;
+            transition: padding 0.3s ease;
         }
+        
+        .main-container.artifact-active {
+            padding: 32px 40px;
+        }
+        
         .chat-box,
         .artifact-pane {
             background: #fff;
@@ -37,17 +45,16 @@
             box-shadow: 0 4px 20px rgba(40, 60, 90, 0.05);
             display: flex;
             flex-direction: column;
-            overflow: hidden;
+            overflow: hidden;            min-width: 0;
         }
         .chat-box {
-            width: 380px;
-            min-width: 300px;
-            max-width: 450px;
+            flex: 0 0 30%;
+            min-width: 320px;
+            max-width: 420px;
             margin: 0;
             height: auto;
             min-height: 550px;
             max-height: 88vh;
-            flex: 1 1 340px;
         }
         .chat-header {
             font-size: 1.1rem;
@@ -226,17 +233,18 @@
             background: #1749b1;
         }
         .artifact-pane {
-            width: 500px;
-            min-width: 300px;
-            max-width: 580px;
+            flex: 1 1 70%;
+            min-width: 0;
+            max-width: none;
             margin: 0;
             height: auto;
             min-height: 550px;
             max-height: 88vh;
             display: none;
             flex-direction: column;
-            flex: 1 1 400px;
+            overflow-x: hidden;
         }
+        
         .artifact-pane.active {
             display: flex;
         }
@@ -269,27 +277,30 @@
         .artifact-code,
         .artifact-preview {
             flex: 1;
-            overflow: auto;
-            background: #23272f;
             border-radius: 0 0 14px 14px;
-            padding: 20px 24px;
-            margin: 0 24px 24px 24px;
+            padding: 20px 26px;
+            margin: 0 14px 24px 14px;
             font-size: 0.95rem;
             min-height: 240px;
             box-sizing: border-box;
+            position: relative;
         }
+        
         .artifact-code {
             font-family: 'Fira Mono', 'Consolas', monospace;
             background: #23272f;
             color: #fff;
             white-space: pre-wrap;
             font-size: 0.95rem;
+            overflow: auto;
         }
+        
         .artifact-preview {
             background: #f8f9fb;
             color: #23272f;
-            border-radius: 0 0 14px 14px;
             font-size: 0.95rem;
+            overflow-y: auto;
+            overflow-x: hidden;
         }
         .artifact-loading {
             display: flex;
@@ -302,7 +313,137 @@
         }
         .artifact-loading .material-icons {
             margin-right: 8px;
-            animation: spin 1s infinite linear;
+            animation: spin 1s infinite linear;        
+        }
+        /* 隐式滚动条样式 */
+        .chat-log::-webkit-scrollbar,
+        .artifact-code::-webkit-scrollbar,
+        .artifact-preview::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .chat-log::-webkit-scrollbar-track,
+        .artifact-code::-webkit-scrollbar-track,
+        .artifact-preview::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        .chat-log::-webkit-scrollbar-thumb,
+        .artifact-code::-webkit-scrollbar-thumb,
+        .artifact-preview::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .chat-log:hover::-webkit-scrollbar-thumb,
+        .artifact-code:hover::-webkit-scrollbar-thumb,
+        .artifact-preview:hover::-webkit-scrollbar-thumb {
+            opacity: 1;
+        }
+        
+        /* Firefox隐式滚动条 */
+        .chat-log,
+        .artifact-code,
+        .artifact-preview {
+            scrollbar-width: thin;
+            scrollbar-color: transparent transparent;
+        }
+        
+        .chat-log:hover,
+        .artifact-code:hover,
+        .artifact-preview:hover {
+            scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+        }
+        /* 全屏按钮样式 */
+        .fullscreen-btn {
+            position: absolute;
+            top: 8px;
+            right: 0px;
+            width: 28px;
+            height: 28px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            opacity: 0;
+            transition: opacity 0.2s;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .artifact-preview:hover .fullscreen-btn {
+            opacity: 1;
+        }
+        
+        .fullscreen-btn:hover {
+            background: #1749b1;
+        }
+        
+        /* 全屏模态框样式 */
+        .fullscreen-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .fullscreen-modal.active {
+            display: flex;
+        }
+        
+        .fullscreen-content {
+            width: 95vw;
+            height: 95vh;
+            background: white;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .fullscreen-header {
+            background: #f8f9fb;
+            padding: 12px 16px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+        }
+        
+        .fullscreen-close {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: #6b7280;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+        }
+        
+        .fullscreen-close:hover {
+            background: #e5e7eb;
+        }
+        
+        .fullscreen-iframe {
+            width: 100%;
+            height: calc(100% - 53px);
+            border: none;
         }
         /* Markdown样式 */
         .message p {
@@ -379,25 +520,39 @@
             padding: 0.4em;
             text-align: left;
             font-size: 0.9em;
-        }
-        .message th {
+        }        .message th {
             background: #f3f4f6;
         }
+        
+        /* 大屏幕优化 - 3:7比例 */
+        @media (min-width: 1400px) {
+            .chat-box {
+                flex: 0 0 30%;
+                max-width: 450px;
+            }
+            .artifact-pane {
+                flex: 1 1 70%;
+            }
+        }
+        
         @media (max-width: 1100px) {
             .main-container {
                 flex-direction: column;
                 align-items: center;
                 gap: 16px;
-                padding: 20px 0;
+                padding: 20px 16px;
                 height: auto;
+                max-width: 100vw;
+                overflow-x: hidden;
             }
             .chat-box,
             .artifact-pane {
-                width: 92%;
+                width: 100%;
                 margin: 0;
-                max-width: 580px;
+                max-width: 600px;
                 max-height: none;
                 height: auto;
+                flex: none;
             }
             .chat-box {
                 min-height: 450px;
@@ -410,12 +565,15 @@
         }
         @media (max-width: 700px) {
             .main-container {
-                padding: 12px 0;
+                padding: 16px 12px;
+                max-width: 100vw;
+                overflow-x: hidden;
             }
             .chat-box,
             .artifact-pane {
-                width: 95%;
+                width: 100%;
                 min-width: 0;
+                max-width: 500px;
                 border-radius: 14px;
             }
             .chat-log {
@@ -448,11 +606,10 @@
             .chat-header {
                 padding: 14px 24px 12px 24px;
             }
-        }
-    </style>
+        }    </style>
 </head>
 <body>
-    <div class="main-container">
+    <div class="main-container" id="main-container">
         <div class="chat-box">
             <div class="chat-header">
                 <span>Artifacts</span>
@@ -472,8 +629,18 @@
                 <div class="artifact-tab" id="tab-preview">Preview</div>
             </div>
             <div class="artifact-code" id="artifact-code"></div>
-            <div class="artifact-preview" id="artifact-preview" style="display:none;"></div>
-        </div>
+            <div class="artifact-preview" id="artifact-preview" style="display:none;"></div>        </div>
+    </div>
+    <!-- 全屏模态框 -->
+    <div class="fullscreen-modal" id="fullscreen-modal">
+        <div class="fullscreen-content">
+            <div class="fullscreen-header">
+                <span>Full Screen Preview</span>
+                <button class="fullscreen-close" id="fullscreen-close">
+                    <i class="material-icons">close</i>
+                </button>
+            </div>
+            <iframe class="fullscreen-iframe" id="fullscreen-iframe"></iframe>        </div>
     </div>
     <!-- 引入Marked.js库 -->
     <script src="https://cdn.jsdelivr.net/npm/marked@4.3.0/marked.min.js"></script>
@@ -488,62 +655,87 @@
         const tabCode = document.getElementById('tab-code');
         const tabPreview = document.getElementById('tab-preview');
         const newChatBtn = document.getElementById('new-chat-btn');
+        const fullscreenModal = document.getElementById('fullscreen-modal');
+        const fullscreenClose = document.getElementById('fullscreen-close');
+        const fullscreenIframe = document.getElementById('fullscreen-iframe');
+        const mainContainer = document.getElementById('main-container');
         let conversationId = localStorage.getItem('conversation_id') || '';
         let lastArtifactHtml = '';
         let artifactGenerating = false;
         let artifactCodeBuffer = '';
         let artifactMessagePlaceholder = null;
         
-    
-        function updateCodePlaceholder(botMessageContainer, contentBeforeCodeblock, isLoading = true) {
+        function scrollToBottom() {
+            chatLog.scrollTop = chatLog.scrollHeight;
+        }
+        
+        function scrollCodeToBottom() {
+            artifactCode.scrollTop = artifactCode.scrollHeight;
+        }
+        
+        function openFullscreen() {
+            if (lastArtifactHtml) {
+                const blob = new Blob([lastArtifactHtml], {type: 'text/html'});
+                const blobUrl = URL.createObjectURL(blob);
+                fullscreenIframe.src = blobUrl;
+                fullscreenModal.classList.add('active');
+                fullscreenIframe.onload = function() {
+                    URL.revokeObjectURL(blobUrl);
+                };
+            }
+        }
+          function closeFullscreen() {
+            fullscreenModal.classList.remove('active');
+            fullscreenIframe.src = '';
+        }
+        
+        fullscreenClose.addEventListener('click', closeFullscreen);
+        fullscreenModal.addEventListener('click', function(e) {
+            if (e.target === fullscreenModal) closeFullscreen();
+        });
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && fullscreenModal.classList.contains('active')) {
+                closeFullscreen();
+            }
+        });
+          function updateCodePlaceholder(botMessageContainer, contentBeforeCodeblock, isLoading = true) {
             if (isLoading) {
                 if (artifactMessagePlaceholder) {
-                
                     const beforeContent = botMessageContainer.querySelector('.content-before-code');
                     if (beforeContent) {
                         beforeContent.innerHTML = renderMarkdown(contentBeforeCodeblock);
                     } else {
-                    
                         const currentHTML = botMessageContainer.innerHTML;
-                    
                         const placeholderDiv = botMessageContainer.querySelector('.code-placeholder');
                         if (placeholderDiv) {
                             botMessageContainer.innerHTML = `<div class="content-before-code">${renderMarkdown(contentBeforeCodeblock)}</div>`;
                             botMessageContainer.appendChild(placeholderDiv);
                         } else {
-                        
                             botMessageContainer.innerHTML = `<div class="content-before-code">${renderMarkdown(contentBeforeCodeblock)}</div>` +
                                 `<div class='code-placeholder code-placeholder-loading'><i class="material-icons spinning">autorenew</i>CODING...</div>`;
                             artifactMessagePlaceholder = botMessageContainer.querySelector('.code-placeholder');
+                            scrollToBottom();
                         }
                     }
                 } else {
-                
                     botMessageContainer.innerHTML = `<div class="content-before-code">${renderMarkdown(contentBeforeCodeblock)}</div>` +
                         `<div class='code-placeholder code-placeholder-loading'><i class="material-icons spinning">autorenew</i>CODING...</div>`;
-                    artifactMessagePlaceholder = botMessageContainer.querySelector('.code-placeholder');
+                    artifactMessagePlaceholder = botMessageContainer.querySelector('.code-placeholder');                    scrollToBottom();
                 }
             } else {
-            
-            
                 const afterContent = botMessageContainer.querySelector('.content-after-code');
                 if (afterContent) {
                     afterContent.remove();
                 }
-                
-            
                 const beforeContent = botMessageContainer.querySelector('.content-before-code');
                 if (beforeContent) {
                     beforeContent.innerHTML = renderMarkdown(contentBeforeCodeblock);
                 } else {
-                
                     const beforeDiv = document.createElement('div');
                     beforeDiv.className = 'content-before-code';
                     beforeDiv.innerHTML = renderMarkdown(contentBeforeCodeblock);
                     botMessageContainer.prepend(beforeDiv);
                 }
-                
-            
                 const placeholder = botMessageContainer.querySelector('.code-placeholder');
                 if (placeholder) {
                     placeholder.className = 'code-placeholder code-placeholder-completed';
@@ -552,8 +744,6 @@
                     const completeDiv = document.createElement('div');
                     completeDiv.className = 'code-placeholder code-placeholder-completed';
                     completeDiv.innerHTML = '<i class="material-icons">check_circle</i>Code generation completed';
-                    
-                
                     const beforeContent = botMessageContainer.querySelector('.content-before-code');
                     if (beforeContent) {
                         beforeContent.after(completeDiv);
@@ -563,7 +753,6 @@
                 }
             }
         }
-        
         marked.setOptions({
             gfm: true,
             breaks: true,
@@ -578,35 +767,39 @@
             tabPreview.classList.remove('active');
             artifactCode.style.display = '';
             artifactPreview.style.display = 'none';
+            // 切换到Code标签时自动滚动到底部
+            setTimeout(() => {
+                scrollCodeToBottom();
+            }, 50);
         };
+        
         tabPreview.onclick = function () {
             tabPreview.classList.add('active');
             tabCode.classList.remove('active');
             artifactCode.style.display = 'none';
             artifactPreview.style.display = '';
-            
             if (artifactGenerating) {
                 artifactPreview.innerHTML = `<div class='artifact-loading'><i class="material-icons">autorenew</i>CODING...</div>`;
             } else if (lastArtifactHtml) {
                 try {
-                    // 清空预览区域
                     artifactPreview.innerHTML = '';
-                    
-                    // 创建一个blob URL
                     const blob = new Blob([lastArtifactHtml], {type: 'text/html'});
                     const blobUrl = URL.createObjectURL(blob);
-                    
-                    // 创建iframe并设置src为blob URL
                     const iframe = document.createElement('iframe');
                     iframe.style.width = '100%';
                     iframe.style.height = '100%';
                     iframe.style.border = 'none';
+                    iframe.style.maxWidth = '100%';
+                    iframe.style.minHeight = '400px';
+                    iframe.style.overflowX = 'hidden';
                     iframe.src = blobUrl;
-                    
-                    // 添加iframe到预览区域
+                    const fullscreenBtn = document.createElement('button');
+                    fullscreenBtn.className = 'fullscreen-btn';
+                    fullscreenBtn.innerHTML = '⛶';
+                    fullscreenBtn.onclick = openFullscreen;
+                    artifactPreview.style.position = 'relative';
                     artifactPreview.appendChild(iframe);
-                    
-                    // 在iframe加载完成后释放blob URL
+                    artifactPreview.appendChild(fullscreenBtn);
                     iframe.onload = function() {
                         URL.revokeObjectURL(blobUrl);
                     };
@@ -617,16 +810,20 @@
                 artifactPreview.innerHTML = '';
             }
         };
+        
         function appendMessage(text, sender) {
             const msg = document.createElement('div');
             msg.className = 'message ' + sender;
             msg.innerHTML = renderMarkdown(text);
             chatLog.appendChild(msg);
-            chatLog.scrollTop = chatLog.scrollHeight;
+            setTimeout(() => {
+                scrollToBottom();
+            }, 0);
             return msg;
         }
         function showArtifact(htmlCode) {
             artifactPane.classList.add('active');
+            mainContainer.classList.add('artifact-active');
             artifactCode.textContent = htmlCode;
             if (!tabCode.classList.contains('active')) tabCode.classList.add('active');
             tabPreview.classList.remove('active');
@@ -634,8 +831,10 @@
             artifactPreview.style.display = 'none';
             lastArtifactHtml = htmlCode;
         }
+        
         function hideArtifact() {
             artifactPane.classList.remove('active');
+            mainContainer.classList.remove('artifact-active');
             artifactCode.textContent = '';
             artifactPreview.innerHTML = '';
             lastArtifactHtml = '';
@@ -660,7 +859,11 @@
                     },
                     body: JSON.stringify(requestBody)
                 });
-                if (!response.ok) throw new Error('Network response was not ok');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
                 let botMessageContainer = appendMessage('', 'bot');
                 const reader = response.body.getReader();
                 const decoder = new TextDecoder('utf-8');
@@ -684,8 +887,7 @@
                         try {
                             const data = JSON.parse(line);
                             if (data.answer) {
-                                accumulatedText += data.answer;
-                                if (!codeBlockStarted) {
+                                accumulatedText += data.answer;                                if (!codeBlockStarted) {
                                     const codeStartMatch = accumulatedText.match(htmlBlockStartRegex);
                                     if (codeStartMatch) {
                                         codeBlockStarted = true;
@@ -695,6 +897,7 @@
                                         const contentBeforeCodeblock = accumulatedText.substring(0, codeStartIndex);
                                         updateCodePlaceholder(botMessageContainer, contentBeforeCodeblock);
                                         artifactPane.classList.add('active');
+                                        mainContainer.classList.add('artifact-active');
                                         tabCode.classList.add('active');
                                         tabPreview.classList.remove('active');
                                         artifactCode.style.display = '';
@@ -702,6 +905,7 @@
                                         artifactCode.textContent = 'CODING...';
                                         artifactPreview.innerHTML = '';
                                         artifactMessagePlaceholder = botMessageContainer.querySelector('.code-placeholder');
+                                        scrollToBottom();
                                     }
                                 }
                                 if (codeBlockStarted && !codeBlockEnded) {
@@ -714,9 +918,7 @@
                                         const codeEndIndex = accumulatedText.indexOf('```', codeStartIndex + 6) + 3;
                                         const contentBeforeCodeblock = accumulatedText.substring(0, codeStartIndex);
                                         let contentAfterCodeblock = accumulatedText.substring(codeEndIndex);
-                                        
                                         contentAfterCodeblock = contentAfterCodeblock.trim();
-                                        
                                         updateCodePlaceholder(botMessageContainer, contentBeforeCodeblock, false);
                                         if (contentAfterCodeblock) {
                                             const afterContent = document.createElement('div');
@@ -724,11 +926,9 @@
                                             afterContent.innerHTML = renderMarkdown(contentAfterCodeblock);
                                             botMessageContainer.appendChild(afterContent);
                                         }
-                                        
                                         artifactCode.textContent = artifactCodeBuffer;
                                         lastArtifactHtml = artifactCodeBuffer;
-                                        
-                                        // 预加载iframe以便立即渲染
+                                        scrollCodeToBottom();
                                         if (tabPreview.classList.contains('active')) {
                                             tabPreview.onclick();
                                         }
@@ -738,21 +938,18 @@
                                             const partialCode = accumulatedText.substring(codeStartIndex + 7);
                                             artifactCodeBuffer = partialCode.replace(/^\s*\n/, '');
                                             artifactCode.textContent = artifactCodeBuffer;
+                                            scrollCodeToBottom();
                                             const contentBeforeCodeblock = accumulatedText.substring(0, codeStartIndex);
                                             updateCodePlaceholder(botMessageContainer, contentBeforeCodeblock);
                                         }
                                     }
                                 } else if (!codeBlockStarted || codeBlockEnded) {
-                                
                                     if (codeBlockEnded) {
-                                    
                                         const codeStartIndex = accumulatedText.indexOf('```html');
                                         const codeEndIndex = accumulatedText.indexOf('```', codeStartIndex + 6) + 3;
                                         const contentBeforeCodeblock = accumulatedText.substring(0, codeStartIndex);
                                         let contentAfterCodeblock = accumulatedText.substring(codeEndIndex);
-                                        
                                         contentAfterCodeblock = contentAfterCodeblock.trim();
-                                        
                                         updateCodePlaceholder(botMessageContainer, contentBeforeCodeblock, false);
                                         if (contentAfterCodeblock) {
                                             const afterContent = document.createElement('div');
@@ -761,9 +958,10 @@
                                             botMessageContainer.appendChild(afterContent);
                                         }
                                     } else {
-                                    
                                         botMessageContainer.innerHTML = renderMarkdown(accumulatedText);
                                     }
+                                    // 在流式输出过程中实时滚动聊天区域
+                                    scrollToBottom();
                                 }
                             }
                             if (data.conversation_id) {
@@ -775,17 +973,12 @@
                     }
                 }
                 if (codeBlockEnded && lastArtifactHtml) {
-                
                     tabPreview.onclick();
-                    
-                
                     const codeStartIndex = accumulatedText.indexOf('```html');
                     const codeEndIndex = accumulatedText.indexOf('```', codeStartIndex + 6) + 3;
                     const contentBeforeCodeblock = accumulatedText.substring(0, codeStartIndex);
                     let contentAfterCodeblock = accumulatedText.substring(codeEndIndex);
-                    
                     contentAfterCodeblock = contentAfterCodeblock.trim();
-                    
                     updateCodePlaceholder(botMessageContainer, contentBeforeCodeblock, false);
                     if (contentAfterCodeblock) {
                         const afterContent = document.createElement('div');
@@ -798,32 +991,31 @@
                     hideArtifact();
                 }
             } catch (error) {
-                appendMessage('Error...', 'bot');
+                console.error('Fetch error:', error);
+                let errorMessage = 'Connection error. ';
+                if (error.name === 'TypeError') {
+                    errorMessage += 'Please check your network connection.';
+                } else if (error.message.includes('HTTP')) {
+                    errorMessage += error.message;
+                } else {
+                    errorMessage += 'Please try again.';
+                }
+                appendMessage(errorMessage, 'bot');
                 hideArtifact();
             }
         }
         function startNewConversation() {
-        
             chatLog.innerHTML = '';
-            
-        
             conversationId = '';
             localStorage.removeItem('conversation_id');
-            
-        
             hideArtifact();
             globalAccumulatedText = '';
             globalCodeBlockStarted = false;
             globalCodeBlockEnded = false;
-            
-        
             appendMessage('New Chat', 'bot');
         }
         
-    
         newChatBtn.addEventListener('click', startNewConversation);
-        
-    
         sendBtn.addEventListener('click', () => sendMessage());
         userInput.addEventListener('keypress', function (event) {
             if (event.key === 'Enter') sendMessage();

@@ -8,6 +8,7 @@ __pycache__/
 
 # Distribution / packaging
 .Python
+.python-version
 build/
 develop-eggs/
 dist/
@@ -81,6 +82,7 @@ target/
 # IPython
 profile_default/
 ipython_config.py
+debug_server.py
 
 # pyenv
 #   For a library or package, you might want to ignore these files since the code is
@@ -135,6 +137,8 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+pyproject.toml
+uv.lock
 
 # Spyder project settings
 .spyderproject

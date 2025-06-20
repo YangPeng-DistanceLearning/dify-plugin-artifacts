@@ -1,6 +1,6 @@
 # Artifacts
 
-**Repository:** [dify-plugin-artifacts](https://github.com/svcvit/dify-plugin-artifacts)
+**Repository:** [dify-plugin-artifacts](https://github.com/YangPeng-DistanceLearning/dify-plugin-artifacts)
 
 ### Feature Description
 
@@ -23,9 +23,9 @@ This is a web-based chat interaction interface that can help you automatically r
 ![](./_assets/004.jpg)
 
 
-
 ### Changelog
-
+#### v0.0.4
+- Improved HTML rendering performance and fixed minor UI bugs
 
 #### v0.0.3
 - Fixed issue with localhost not working in local Docker deployment

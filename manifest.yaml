@@ -1,4 +1,4 @@
-version: 0.0.3
+version: 0.0.4
 type: plugin
 author: "svcvit"
 name: "artifacts"
@@ -7,7 +7,7 @@ description:
   zh_Hans: 一个DIFY的聊天界面，可以渲染LLM生成的HTML代码
 label:
   en_US: "Artifacts"
-created_at: "2025-04-22T08:00:00.000000000Z"
+created_at: "2025-06-19T08:00:00.000000000Z"
 icon: icon.svg
 resource:
   memory: 1048576
@@ -20,7 +20,7 @@ plugins:
   endpoints:
     - "provider/artifacts.yaml"
 meta:
-  version: 0.0.3
+  version: 0.0.4
   arch:
     - "amd64"
     - "arm64"
